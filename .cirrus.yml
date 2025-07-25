@@ -17,6 +17,8 @@ build_task:
   build_script:
     - pwd
     - ls -la
+    - ls -la /usr
+    - ls -la /usr/ports
   
   # Test steps
   test_script:
