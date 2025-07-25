@@ -20,4 +20,4 @@ build_task:
   
   # Test steps
   test_script:
-    - echo "Running tests""
+    - echo "Running tests"
