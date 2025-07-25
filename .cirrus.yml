@@ -6,6 +6,7 @@ freebsd_instance:
 
 # Main build task
 build_task:
+  use_compute_credits: $CIRRUS_USER_COLLABORATOR == 'true'
   name: "Build packages"
   
   # Install dependencies
