@@ -1,0 +1,23 @@
+# Cirrus CI configuration for FreeBSD 14.2
+freebsd_instance:
+  image_family: freebsd-14-2
+  cpu: 2
+  memory: 4G
+
+# Main build task
+build_task:
+  name: "Build packages"
+  
+  # Install dependencies
+  install_script:
+    - pkg update
+    - pkg install -y git
+  
+  # Build steps
+  build_script:
+    - pwd
+    - ls -la
+  
+  # Test steps
+  test_script:
+    - echo "Running tests""
