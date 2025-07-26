@@ -8,6 +8,7 @@ freebsd_instance:
 build_task:
   use_compute_credits: $CIRRUS_USER_COLLABORATOR == 'true'
   name: "Build packages"
+  alias: packages
   
   # Install dependencies
   install_script:
@@ -21,7 +22,6 @@ build_task:
   
   # Publish packages
   publish_script:
-  alias: packages
     - mkdir -p "$(pwd)/FreeBSD:14:amd64/All"
     - mkdir -p "$(pwd)/FreeBSD:14:amd64/Latest"
     - cp /usr/local/gershwin-build/poudriere/data/packages/gershwin_base-gershwin_ports/.latest/All/*.pkg "$(pwd)/FreeBSD:14:amd64/All/"
