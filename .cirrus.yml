@@ -26,7 +26,7 @@ build_task:
     - mkdir -p "$(pwd)/FreeBSD:14:amd64/Latest"
     - cp /usr/local/gershwin-build/poudriere/data/packages/gershwin_base-gershwin_ports/.latest/All/*.pkg "$(pwd)/FreeBSD:14:amd64/All/"
     - cp -r /usr/local/gershwin-build/poudriere/data/packages/gershwin_base-gershwin_ports/.latest/Latest/* "$(pwd)/FreeBSD:14:amd64/Latest/" || true
-    - cd "$(pwd)/FreeBSD:14:amd64" && pkg repo
+    - cd "$(pwd)/FreeBSD:14:amd64" && pkg repo .
   
   # Upload artifacts
   packages_artifacts:
