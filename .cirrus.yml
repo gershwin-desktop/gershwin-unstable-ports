@@ -21,9 +21,9 @@ build_task:
   
   # Publish packages
   publish_script:
-    - mkdir -p /tmp/artifacts/FreeBSD:14:amd64/
-    - cp -R /usr/local/gershwin-build/poudriere/data/packages/gershwin_base-gershwin_ports/ /tmp/artifacts/
+    - mkdir -p "$(pwd)/FreeBSD:14:amd64/"
+    - cp -R /usr/local/gershwin-build/poudriere/data/packages/gershwin_base-gershwin_ports/ "$(pwd)/FreeBSD:14:amd64/"
   
   # Upload artifacts
   packages_artifacts:
-    path: "/tmp/artifacts/**"
+    path: "./FreeBSD:14:amd64/**/*"
