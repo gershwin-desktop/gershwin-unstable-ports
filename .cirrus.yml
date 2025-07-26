@@ -29,4 +29,5 @@ build_task:
   
   # Upload artifacts
   packages_artifacts:
+  alias: packages
     path: "./FreeBSD:14:amd64/**/*"
