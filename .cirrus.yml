@@ -21,8 +21,11 @@ build_task:
   
   # Publish packages
   publish_script:
-    - mkdir -p "$(pwd)/FreeBSD:14:amd64/"
-    - cp -R /usr/local/gershwin-build/poudriere/data/packages/gershwin_base-gershwin_ports/ "$(pwd)/FreeBSD:14:amd64/"
+    - mkdir -p "$(pwd)/FreeBSD:14:amd64/All"
+    - mkdir -p "$(pwd)/FreeBSD:14:amd64/Latest"
+    - cp /usr/local/gershwin-build/poudriere/data/packages/gershwin_base-gershwin_ports/.latest/All/*.pkg "$(pwd)/FreeBSD:14:amd64/All/"
+    - cp -r /usr/local/gershwin-build/poudriere/data/packages/gershwin_base-gershwin_ports/.latest/Latest/* "$(pwd)/FreeBSD:14:amd64/Latest/" || true
+    - pkg repo "$(pwd)/FreeBSD:14:amd64/All"
   
   # Upload artifacts
   packages_artifacts:
