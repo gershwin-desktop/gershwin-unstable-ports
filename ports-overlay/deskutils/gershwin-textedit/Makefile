@@ -1,5 +1,5 @@
 PORTNAME=	gershwin-textedit
-DISTVERSION=	202507261230
+DISTVERSION=       202507261622
 CATEGORIES=	deskutils gnustep
 
 MAINTAINER=	jpm820@proton.me
@@ -13,6 +13,6 @@ USE_GERSHWIN=	back build
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	gershwin-desktop
-GH_TAGNAME=	10df828f8810e8414e319e9f657f1eed12545044
+GH_TAGNAME= 10df828f8810e8414e319e9f657f1eed12545044
 
 .include <bsd.port.mk>

@@ -1,5 +1,5 @@
 PORTNAME=	gershwin-systempreferences
-DISTVERSION=	202507261230
+DISTVERSION=       202507261622
 CATEGORIES=	deskutils gnustep
 
 MAINTAINER=	jpm820@proton.me
@@ -15,6 +15,6 @@ USE_LDCONFIG=	${GNUSTEP_SYSTEM_LIBRARIES}
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	gershwin-desktop
-GH_TAGNAME=	666397f0cd105f9b0c9d8735bcc7d162a714bd51
+GH_TAGNAME= 666397f0cd105f9b0c9d8735bcc7d162a714bd51
 
 .include <bsd.port.mk>
