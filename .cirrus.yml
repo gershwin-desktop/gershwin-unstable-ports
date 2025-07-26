@@ -17,10 +17,5 @@ build_task:
   
   # Build steps
   build_script:
-    - pwd
-    - ls -la
-    - ls -la /usr
+    - make ports
   
-  # Test steps
-  test_script:
-    - echo "Running tests"
