@@ -69,22 +69,18 @@ update_ports() {
     ports_overlay_dir="./ports-overlay"
     timestamp=$(date "+%Y%m%d%H%M")
     failed=0
-    
     [ ! -f "$ports_list_file" ] && { echo "ports.list not found"; return 1; }
-    
     while read -r port_path || [ -n "$port_path" ]; do
         case "$port_path" in ''|'#'*) continue ;; esac
-        
         port_dir="${ports_overlay_dir}/${port_path}"
         [ ! -d "$port_dir" ] && { failed=$((failed + 1)); continue; }
-        
         makefile="$port_dir/Makefile"
         [ ! -f "$makefile" ] && { failed=$((failed + 1)); continue; }
-        
         actual_portname=$(grep "^PORTNAME=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
         gh_account=$(grep "^GH_ACCOUNT=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
         gh_project=$(grep "^GH_PROJECT=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
-        
+        gh_tagname=$(grep "^GH_TAGNAME=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
+        portversion=$(grep "^PORTVERSION=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
         [ -z "$actual_portname" ] && { failed=$((failed + 1)); continue; }
         [ -z "$gh_account" ] && { failed=$((failed + 1)); continue; }
         [ -z "$gh_project" ] && gh_project="$actual_portname"
@@ -102,15 +98,27 @@ update_ports() {
         else
             failed=$((failed + 1)); continue
         fi
-        
         [ -z "$commit_hash" ] && { failed=$((failed + 1)); continue; }
         
-        sed -i '' "s/^DISTVERSION=.*/DISTVERSION=	$timestamp/" "$makefile" && \
-        sed -i '' "s/^GH_TAGNAME=.*/GH_TAGNAME=	$commit_hash/" "$makefile" && \
-        (cd "$port_dir" && make makesum) || { failed=$((failed + 1)); continue; }
+        sed -i '' "s/^DISTVERSION=.*/DISTVERSION=       $timestamp/" "$makefile" || { failed=$((failed + 1)); continue; }
         
+        if [ -n "$portversion" ]; then
+            sed -i '' "s/^PORTVERSION=.*/PORTVERSION=       $timestamp/" "$makefile" || { failed=$((failed + 1)); continue; }
+        fi
+        
+        if [ -n "$gh_tagname" ]; then
+            sed -i '' "s/^GH_TAGNAME=.*/GH_TAGNAME= $commit_hash/" "$makefile" || { failed=$((failed + 1)); continue; }
+        else
+            echo "Skipping GH_TAGNAME update for $port_path (not defined in Makefile)"
+        fi
+        
+        distinfo_file="$port_dir/distinfo"
+        if [ -f "$distinfo_file" ]; then
+            (cd "$port_dir" && make makesum) || { failed=$((failed + 1)); continue; }
+        else
+            echo "Skipping makesum for $port_path (no distinfo file)"
+        fi
     done < "$ports_list_file"
-    
     [ $failed -gt 0 ] && return 1
     return 0
 }
