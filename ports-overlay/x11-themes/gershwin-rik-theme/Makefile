@@ -1,5 +1,5 @@
 PORTNAME=	gershwin-rik-theme
-DISTVERSION=       202507261622
+DISTVERSION=       202507261724
 CATEGORIES=	x11-themes gnustep
 
 MAINTAINER=	jpm820@proton.me

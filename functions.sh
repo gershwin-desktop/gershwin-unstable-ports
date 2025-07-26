@@ -69,21 +69,50 @@ update_ports() {
     ports_overlay_dir="./ports-overlay"
     timestamp=$(date "+%Y%m%d%H%M")
     failed=0
+    failed_ports=""
     [ ! -f "$ports_list_file" ] && { echo "ports.list not found"; return 1; }
     while read -r port_path || [ -n "$port_path" ]; do
         case "$port_path" in ''|'#'*) continue ;; esac
+        echo "Processing port: $port_path"
         port_dir="${ports_overlay_dir}/${port_path}"
-        [ ! -d "$port_dir" ] && { failed=$((failed + 1)); continue; }
+        [ ! -d "$port_dir" ] && { echo "ERROR: Port directory not found: $port_dir"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
         makefile="$port_dir/Makefile"
-        [ ! -f "$makefile" ] && { failed=$((failed + 1)); continue; }
+        [ ! -f "$makefile" ] && { echo "ERROR: Makefile not found: $makefile"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
+        
+        # Check if this is a meta port first
+        if grep -q "^USES.*metaport" "$makefile" || grep -q "^NO_BUILD.*yes" "$makefile"; then
+            echo "  Detected meta port - only updating PORTVERSION"
+            portversion=$(grep "^PORTVERSION=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
+            if [ -n "$portversion" ]; then
+                echo "  Updating PORTVERSION to: $timestamp"
+                sed -i '' "s/^PORTVERSION=.*/PORTVERSION=       $timestamp/" "$makefile" || { echo "ERROR: Failed to update PORTVERSION"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
+                echo "  Successfully processed meta port $port_path"
+            else
+                echo "  WARNING: No PORTVERSION found in meta port $makefile"
+            fi
+            echo ""
+            continue
+        fi
+        
+        # Regular port processing (non-meta ports)
         actual_portname=$(grep "^PORTNAME=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
         gh_account=$(grep "^GH_ACCOUNT=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
         gh_project=$(grep "^GH_PROJECT=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
         gh_tagname=$(grep "^GH_TAGNAME=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
         portversion=$(grep "^PORTVERSION=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
-        [ -z "$actual_portname" ] && { failed=$((failed + 1)); continue; }
-        [ -z "$gh_account" ] && { failed=$((failed + 1)); continue; }
+        
+        echo "  PORTNAME: $actual_portname"
+        echo "  GH_ACCOUNT: $gh_account"
+        echo "  GH_PROJECT: $gh_project"
+        echo "  GH_TAGNAME found: $([ -n "$gh_tagname" ] && echo "yes" || echo "no")"
+        echo "  PORTVERSION found: $([ -n "$portversion" ] && echo "yes" || echo "no")"
+        
+        [ -z "$actual_portname" ] && { echo "ERROR: PORTNAME not found in $makefile"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
+        [ -z "$gh_account" ] && { echo "ERROR: GH_ACCOUNT not found in $makefile"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
         [ -z "$gh_project" ] && gh_project="$actual_portname"
+        
+        echo "  Using GH_PROJECT: $gh_project"
+        echo "  Fetching commit from GitHub API..."
         
         if command -v fetch >/dev/null 2>&1; then
             api_response=$(fetch -qo - "https://api.github.com/repos/${gh_account}/${gh_project}/commits/master" 2>/dev/null)
@@ -96,30 +125,63 @@ update_ports() {
                 api_response=$(curl -s "https://api.github.com/repos/${gh_account}/${gh_project}/commits/main")
             commit_hash=$(echo "$api_response" | sed -n 's/^{"sha":"\([^"]*\)".*/\1/p')
         else
-            failed=$((failed + 1)); continue
+            echo "ERROR: Neither fetch nor curl available"
+            failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue
         fi
-        [ -z "$commit_hash" ] && { failed=$((failed + 1)); continue; }
         
-        sed -i '' "s/^DISTVERSION=.*/DISTVERSION=       $timestamp/" "$makefile" || { failed=$((failed + 1)); continue; }
+        [ -z "$commit_hash" ] && { echo "ERROR: Could not retrieve commit hash from GitHub API"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
+        echo "  Commit hash: $commit_hash"
+        
+        echo "  Updating DISTVERSION to: $timestamp"
+        sed -i '' "s/^DISTVERSION=.*/DISTVERSION=       $timestamp/" "$makefile" || { echo "ERROR: Failed to update DISTVERSION"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
         
         if [ -n "$portversion" ]; then
-            sed -i '' "s/^PORTVERSION=.*/PORTVERSION=       $timestamp/" "$makefile" || { failed=$((failed + 1)); continue; }
+            echo "  Updating PORTVERSION to: $timestamp"
+            sed -i '' "s/^PORTVERSION=.*/PORTVERSION=       $timestamp/" "$makefile" || { echo "ERROR: Failed to update PORTVERSION"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
         fi
         
         if [ -n "$gh_tagname" ]; then
-            sed -i '' "s/^GH_TAGNAME=.*/GH_TAGNAME= $commit_hash/" "$makefile" || { failed=$((failed + 1)); continue; }
+            echo "  Updating GH_TAGNAME to: $commit_hash"
+            sed -i '' "s/^GH_TAGNAME=.*/GH_TAGNAME= $commit_hash/" "$makefile" || { echo "ERROR: Failed to update GH_TAGNAME"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
         else
-            echo "Skipping GH_TAGNAME update for $port_path (not defined in Makefile)"
+            echo "  Skipping GH_TAGNAME update (not defined in Makefile)"
         fi
         
         distinfo_file="$port_dir/distinfo"
         if [ -f "$distinfo_file" ]; then
-            (cd "$port_dir" && make makesum) || { failed=$((failed + 1)); continue; }
+            echo "  Running make makesum..."
+            (cd "$port_dir" && make makesum) || { echo "ERROR: make makesum failed for $port_path"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
         else
-            echo "Skipping makesum for $port_path (no distinfo file)"
+            echo "  Skipping makesum (no distinfo file)"
         fi
+        
+        echo "  Successfully processed $port_path"
+        echo ""
     done < "$ports_list_file"
-    [ $failed -gt 0 ] && return 1
+    if [ $failed -gt 0 ]; then
+        echo ""
+        echo "=== SUMMARY ==="
+        echo "Total failed ports: $failed"
+        echo "Failed ports:$failed_ports"
+        echo ""
+        
+        for failed_port in $failed_ports; do
+            echo "Checking if $failed_port is a meta port (no distfiles)..."
+            failed_makefile="${ports_overlay_dir}/${failed_port}/Makefile"
+            if [ -f "$failed_makefile" ]; then
+                if grep -q "^USES.*metaport" "$failed_makefile" || grep -q "^NO_BUILD.*yes" "$failed_makefile" || ! grep -q "^DISTVERSION\|^PORTVERSION" "$failed_makefile"; then
+                    echo "  -> $failed_port appears to be a meta port - this may be expected"
+                else
+                    echo "  -> $failed_port appears to be a regular port - investigate further"
+                fi
+            else
+                echo "  -> Cannot check $failed_port (Makefile not found)"
+            fi
+        done
+        
+        return 1
+    fi
+    echo "All ports processed successfully"
     return 0
 }
 
