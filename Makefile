@@ -6,7 +6,10 @@ FUNCS= ${SCRIPT_DIR}/functions.sh
 .SILENT:
 
 ports:
-	sh -c ". ${FUNCS}; ports_target"
+	sh -c ". ${FUNCS}; make_ports"
+
+update:
+	sh -c ". ${FUNCS}; update_ports"
 
 clean:
-	@sh -c ". ${FUNCS}; clean_directories"
+	@sh -c ". ${FUNCS}; clean_ports"
