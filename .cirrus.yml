@@ -7,8 +7,13 @@ freebsd_instance:
 # Main build task
 build_task:
   use_compute_credits: $CIRRUS_USER_COLLABORATOR == 'true'
-  name: "Build packages"
+  name: "Build packages for FreeBSD:14:amd64"
   alias: data
+
+  # Cache the poudriere cache directory globally
+  poudriere_cache:
+    folder: /usr/local/gershwin-build/poudriere/data/cache/gershwin_base-gershwin_ports
+    fingerprint: "global"
   
   # Install dependencies
   install_script:
