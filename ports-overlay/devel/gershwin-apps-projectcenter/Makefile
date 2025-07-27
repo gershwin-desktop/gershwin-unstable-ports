@@ -1,5 +1,5 @@
 PORTNAME=	apps-projectcenter
-DISTVERSION=       202507271315
+DISTVERSION=       202507271325
 CATEGORIES=	devel gnustep
 PKGNAMEPREFIX=	gershwin-
 
