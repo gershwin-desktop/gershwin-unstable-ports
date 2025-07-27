@@ -3,9 +3,10 @@ Unstable Gershwin ports fo FreeBSD
 
 ## Requirements
 
-* FreeBSD
+* FreeBSD 14.2/14.3
 * git
 * poudriere
+* xorg
 
 ## Usage
 
@@ -60,3 +61,9 @@ This requires a working Xorg setup before running
 . /System/Library/Makefiles/GNUstep.sh
 startx /System/Applications/GWorkspace.app/Gworkspace
 ```
+
+### Known issues with this initial version that will be fixed soon
+
+* Cannot see global menus with Rik theme without compositor due to it's transparent settings
+* Cannot minimize windows without window manager
+* Button placement is wrong fix is in macintosh branch needs ported to main
