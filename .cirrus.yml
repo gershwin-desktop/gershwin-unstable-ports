@@ -12,7 +12,7 @@ build_task:
 
   # Cache poudriere components
   poudriere_cache:
-    folder: /usr/local/gershwin-build   
+    folder: /usr/local/gershwin-build/poudriere/data/cache/gershwin_base-gershwin_ports
     fingerprint: "global"
 
   # Install dependencies
