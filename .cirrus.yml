@@ -10,10 +10,18 @@ build_task:
   name: "Build packages for FreeBSD:14:amd64"
   alias: data
 
-  # Cache the poudriere cache directory globally
+  # Cache poudriere components
   poudriere_cache:
     folder: /usr/local/gershwin-build/poudriere/data/cache/gershwin_base-gershwin_ports
     fingerprint: "global"
+
+  poudriere_jail_cache:
+    folder: /usr/local/gershwin-build/poudriere/data/jails/gershwin_base
+    fingerprint: "freebsd-14.2-jail"  # Update when FreeBSD version changes
+  
+  ports_tree_cache:
+    folder: /usr/ports
+    fingerprint: $CIRRUS_BRANCH  # Per-branch since ports may vary
   
   # Install dependencies
   install_script:
