@@ -10,30 +10,19 @@ build_task:
   name: "Build packages for FreeBSD:14:amd64"
   alias: data
 
-  # Cache poudriere components
-  poudriere_cache:
-    folder: /usr/local/gershwin-build/poudriere/data/cache/gershwin_base-gershwin_ports
-    fingerprint: "global"
-
   # Install dependencies
   install_script:
     - pkg update
     - pkg install -y git
     - pkg install -y poudriere
+
+  # Update ports
+  update_ports_script:
+    - make update
   
   # Build steps
   build_script:
     - make ports
-
-  # Extract build logs on failure
-  always:
-    build_logs_script:
-      - echo "=== Build Summary ==="
-      - find /usr/local/gershwin-build/poudriere/data/logs -name "*.log" -newer /tmp -exec echo "Found log:" {} ";"
-      - echo "=== Failed Port Logs ==="
-      - find /usr/local/gershwin-build/poudriere/data/logs -name "*gershwin-tools-make*.log" -exec cat {} ";"
-      - echo "=== Configure Errors ==="
-      - find /usr/local/gershwin-build/poudriere/data/logs -name "*.log" -exec grep -l "configure.*error" {} ";" | head -5 | xargs cat
 
   # Publish packages
   publish_script:

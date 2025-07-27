@@ -53,18 +53,10 @@ su
 pkg install gershwin-desktop
 ```
 
-###
-This meta package installs requirements to build more GNUstep apps
-
-```
-su
-pkg install gershwin-developer
-```
-
 ### Starting the desktop
 This requires a working Xorg setup before running
 
 ```
 . /System/Library/Makefiles/GNUstep.sh
-startx GWorkspace
+startx /System/Applications/GWorkspace.app/Gworkspace
 ```
