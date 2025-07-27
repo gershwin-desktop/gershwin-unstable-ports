@@ -13,7 +13,7 @@ build_task:
   # Cache poudriere components
   poudriere_cache:
     folder: /usr/local/gershwin-build   
-    fingerprint: "global
+    fingerprint: "global"
 
   # Install dependencies
   install_script:
