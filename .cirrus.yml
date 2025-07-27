@@ -24,6 +24,16 @@ build_task:
   # Build steps
   build_script:
     - make ports
+
+  # Extract build logs on failure
+  always:
+    build_logs_script:
+      - echo "=== Build Summary ==="
+      - find /usr/local/gershwin-build/poudriere/data/logs -name "*.log" -newer /tmp -exec echo "Found log: {}" \;
+      - echo "=== Failed Port Logs ==="
+      - find /usr/local/gershwin-build/poudriere/data/logs -name "*gershwin-tools-make*.log" -exec cat {} \;
+      - echo "=== Configure Errors ==="
+      - find /usr/local/gershwin-build/poudriere/data/logs -name "*.log" -exec grep -l "configure.*error\|configure.*failed" {} \; | xargs cat
   
   # Publish packages
   publish_script:
