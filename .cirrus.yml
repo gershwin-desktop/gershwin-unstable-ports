@@ -29,11 +29,11 @@ build_task:
   always:
     build_logs_script:
       - echo "=== Build Summary ==="
-      - find /usr/local/gershwin-build/poudriere/data/logs -name "*.log" -newer /tmp -exec echo "Found log: {}" \;
+      - find /usr/local/gershwin-build/poudriere/data/logs -name "*.log" -newer /tmp -exec echo "Found log:" {} ";"
       - echo "=== Failed Port Logs ==="
-      - find /usr/local/gershwin-build/poudriere/data/logs -name "*gershwin-tools-make*.log" -exec cat {} \;
+      - find /usr/local/gershwin-build/poudriere/data/logs -name "*gershwin-tools-make*.log" -exec cat {} ";"
       - echo "=== Configure Errors ==="
-      - find /usr/local/gershwin-build/poudriere/data/logs -name "*.log" -exec grep -l "configure.*error" {} \; | head -5 | xargs cat
+      - find /usr/local/gershwin-build/poudriere/data/logs -name "*.log" -exec grep -l "configure.*error" {} ";" | head -5 | xargs cat
 
   # Publish packages
   publish_script:
