@@ -65,6 +65,9 @@ poudriere_ports() {
 }
 
 update_ports() {
+    export POUDRIERE_ETC="/usr/local/gershwin-build/etc"
+    create_directories
+    install_poudriere_conf
     poudriere_ports
     install_overlay_ports
     ports_list_file="./ports.list"
@@ -100,33 +103,37 @@ update_ports() {
         makefile="$port_dir/Makefile"
         [ ! -f "$makefile" ] && { echo "ERROR: Makefile not found: $makefile"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
         
-        # Check if this is a meta port first
-        if grep -q "^USES.*metaport" "$makefile" || grep -q "^NO_BUILD.*yes" "$makefile"; then
-            echo "  Detected meta port - only updating PORTVERSION"
-            portversion=$(grep "^PORTVERSION=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
-            if [ -n "$portversion" ]; then
-                echo "  Updating PORTVERSION to: $version"
-                sed -i '' "s/^PORTVERSION=.*/PORTVERSION=       $version/" "$makefile" || { echo "ERROR: Failed to update PORTVERSION"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
-                echo "  Successfully processed meta port $port_path"
-            else
-                echo "  WARNING: No PORTVERSION found in meta port $makefile"
-            fi
+        # Simple detection: PORTVERSION = meta port, DISTVERSION = regular port
+        portversion=$(grep "^PORTVERSION=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
+        distversion=$(grep "^DISTVERSION=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
+        
+        if [ -n "$portversion" ]; then
+            # Meta port - only update PORTVERSION
+            echo "  Detected meta port (PORTVERSION) - only updating version"
+            echo "  Updating PORTVERSION to: $version"
+            sed -i '' "s/^PORTVERSION=.*/PORTVERSION=       $version/" "$makefile" || { echo "ERROR: Failed to update PORTVERSION"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
+            echo "  Successfully processed meta port $port_path"
             echo ""
             continue
+        elif [ -n "$distversion" ]; then
+            # Regular port - update DISTVERSION and run makesum
+            echo "  Detected regular port (DISTVERSION) - updating version and distinfo"
+        else
+            echo "ERROR: No PORTVERSION or DISTVERSION found in $makefile"
+            failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue
         fi
         
-        # Regular port processing (non-meta ports)
+        # Regular port processing continues below...
         actual_portname=$(grep "^PORTNAME=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
         gh_account=$(grep "^GH_ACCOUNT=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
         gh_project=$(grep "^GH_PROJECT=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
         gh_tagname=$(grep "^GH_TAGNAME=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
-        portversion=$(grep "^PORTVERSION=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
         
         echo "  PORTNAME: $actual_portname"
         echo "  GH_ACCOUNT: $gh_account"
         echo "  GH_PROJECT: $gh_project"
         echo "  GH_TAGNAME found: $([ -n "$gh_tagname" ] && echo "yes" || echo "no")"
-        echo "  PORTVERSION found: $([ -n "$portversion" ] && echo "yes" || echo "no")"
+        echo "  DISTVERSION found: $([ -n "$distversion" ] && echo "yes" || echo "no")"
         
         [ -z "$actual_portname" ] && { echo "ERROR: PORTNAME not found in $makefile"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
         [ -z "$gh_account" ] && { echo "ERROR: GH_ACCOUNT not found in $makefile"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
@@ -155,11 +162,6 @@ update_ports() {
         
         echo "  Updating DISTVERSION to: $version"
         sed -i '' "s/^DISTVERSION=.*/DISTVERSION=       $version/" "$makefile" || { echo "ERROR: Failed to update DISTVERSION"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
-        
-        if [ -n "$portversion" ]; then
-            echo "  Updating PORTVERSION to: $version"
-            sed -i '' "s/^PORTVERSION=.*/PORTVERSION=       $version/" "$makefile" || { echo "ERROR: Failed to update PORTVERSION"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
-        fi
         
         if [ -n "$gh_tagname" ]; then
             echo "  Updating GH_TAGNAME to: $commit_hash"

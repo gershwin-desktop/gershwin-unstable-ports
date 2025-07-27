@@ -1,5 +1,5 @@
 PORTNAME=	gershwin-workspace
-DISTVERSION=       202507261941
+DISTVERSION=       202507271315
 CATEGORIES=	deskutils gnustep
 
 MAINTAINER=	jpm820@proton.me

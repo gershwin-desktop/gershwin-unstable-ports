@@ -8,6 +8,11 @@ Unstable Gershwin ports fo FreeBSD
 * poudriere
 * xorg
 
+
+### How this works
+
+Ports in ports-overylay are treated as meta ports if they have PORTVERSION specified.  Otherwise ports with DISTVERSION will automatically use the latest git hash from master or main branch.  This means everytime this runs the latest GNUstep core libs and Gershwin components are built into ports.  It runs automatically once per day and on commit.  It also allows for local operation outside of Cirrus.
+
 ## Usage
 
 ### Generate new ports
@@ -32,7 +37,7 @@ make clean
 ```
 
 
-### Installing packages from build artifacts for this respository
+### Installing packages for build artifacts from this respository
 
 ```
 su
@@ -61,9 +66,3 @@ This requires a working Xorg setup before running
 . /System/Library/Makefiles/GNUstep.sh
 startx /System/Applications/GWorkspace.app/Gworkspace
 ```
-
-### Known issues with this initial version that will be fixed soon
-
-* Cannot see global menus with Rik theme without compositor due to it's transparent settings
-* Cannot minimize windows without window manager
-* Button placement is wrong fix is in macintosh branch needs ported to main

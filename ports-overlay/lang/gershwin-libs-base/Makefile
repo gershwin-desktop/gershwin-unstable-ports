@@ -1,5 +1,5 @@
 PORTNAME=	libs-base
-DISTVERSION=       202507261941
+DISTVERSION=       202507271315
 CATEGORIES=	lang devel gnustep
 PKGNAMEPREFIX=	gershwin-
 
