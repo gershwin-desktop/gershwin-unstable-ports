@@ -67,13 +67,32 @@ poudriere_ports() {
 update_ports() {
     ports_list_file="./ports.list"
     ports_overlay_dir="./ports-overlay"
-    timestamp=$(date "+%Y%m%d%H%M")
+    version_file="/usr/local/gershwin-build/port_version.txt"
     failed=0
     failed_ports=""
+    
+    # Ensure the directory exists
+    mkdir -p "/usr/local/gershwin-build"
+    
+    # Generate timestamp once and save it to file (overwrite each run)
+    timestamp=$(date "+%Y%m%d%H%M")
+    echo "$timestamp" > "$version_file"
+    echo "Using consistent version: $timestamp (saved to $version_file)"
+    
     [ ! -f "$ports_list_file" ] && { echo "ports.list not found"; return 1; }
+    
     while read -r port_path || [ -n "$port_path" ]; do
         case "$port_path" in ''|'#'*) continue ;; esac
         echo "Processing port: $port_path"
+        
+        # Read the consistent timestamp from file
+        if [ -f "$version_file" ]; then
+            version=$(cat "$version_file")
+        else
+            echo "ERROR: Version file not found: $version_file"
+            failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue
+        fi
+        
         port_dir="${ports_overlay_dir}/${port_path}"
         [ ! -d "$port_dir" ] && { echo "ERROR: Port directory not found: $port_dir"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
         makefile="$port_dir/Makefile"
@@ -84,8 +103,8 @@ update_ports() {
             echo "  Detected meta port - only updating PORTVERSION"
             portversion=$(grep "^PORTVERSION=" "$makefile" | cut -d= -f2- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
             if [ -n "$portversion" ]; then
-                echo "  Updating PORTVERSION to: $timestamp"
-                sed -i '' "s/^PORTVERSION=.*/PORTVERSION=       $timestamp/" "$makefile" || { echo "ERROR: Failed to update PORTVERSION"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
+                echo "  Updating PORTVERSION to: $version"
+                sed -i '' "s/^PORTVERSION=.*/PORTVERSION=       $version/" "$makefile" || { echo "ERROR: Failed to update PORTVERSION"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
                 echo "  Successfully processed meta port $port_path"
             else
                 echo "  WARNING: No PORTVERSION found in meta port $makefile"
@@ -132,12 +151,12 @@ update_ports() {
         [ -z "$commit_hash" ] && { echo "ERROR: Could not retrieve commit hash from GitHub API"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
         echo "  Commit hash: $commit_hash"
         
-        echo "  Updating DISTVERSION to: $timestamp"
-        sed -i '' "s/^DISTVERSION=.*/DISTVERSION=       $timestamp/" "$makefile" || { echo "ERROR: Failed to update DISTVERSION"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
+        echo "  Updating DISTVERSION to: $version"
+        sed -i '' "s/^DISTVERSION=.*/DISTVERSION=       $version/" "$makefile" || { echo "ERROR: Failed to update DISTVERSION"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
         
         if [ -n "$portversion" ]; then
-            echo "  Updating PORTVERSION to: $timestamp"
-            sed -i '' "s/^PORTVERSION=.*/PORTVERSION=       $timestamp/" "$makefile" || { echo "ERROR: Failed to update PORTVERSION"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
+            echo "  Updating PORTVERSION to: $version"
+            sed -i '' "s/^PORTVERSION=.*/PORTVERSION=       $version/" "$makefile" || { echo "ERROR: Failed to update PORTVERSION"; failed=$((failed + 1)); failed_ports="$failed_ports $port_path"; continue; }
         fi
         
         if [ -n "$gh_tagname" ]; then
@@ -158,6 +177,7 @@ update_ports() {
         echo "  Successfully processed $port_path"
         echo ""
     done < "$ports_list_file"
+    
     if [ $failed -gt 0 ]; then
         echo ""
         echo "=== SUMMARY ==="

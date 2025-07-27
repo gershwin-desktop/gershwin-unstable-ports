@@ -1,5 +1,5 @@
 PORTNAME=	gershwin-terminal
-DISTVERSION=       202507261724
+DISTVERSION=       202507261941
 CATEGORIES=	x11 gnustep
 
 MAINTAINER=	jpm820@proton.me
