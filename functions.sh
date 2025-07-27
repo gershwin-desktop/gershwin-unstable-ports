@@ -65,6 +65,7 @@ poudriere_ports() {
 }
 
 update_ports() {
+    poudriere_ports
     install_overlay_ports
     ports_list_file="./ports.list"
     ports_overlay_dir="./ports-overlay"
