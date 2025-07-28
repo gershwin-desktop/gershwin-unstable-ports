@@ -1,5 +1,5 @@
 PORTNAME=	gershwin-terminal
-DISTVERSION=       202507271325
+DISTVERSION=       202507281259
 CATEGORIES=	x11 gnustep
 
 MAINTAINER=	jpm820@proton.me
@@ -8,9 +8,9 @@ WWW=		https://github.com/gershwin-desktop/gershwin-terminal
 
 LICENSE=	GPLv2 # only
 
-USES=		gershwin iconv
+USES=		gnustep iconv
 CONFLICTS=	terminal.app
-USE_GERSHWIN=	back build
+USE_GNUSTEP=	back build
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	gershwin-desktop

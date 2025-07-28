@@ -1,5 +1,5 @@
 PORTNAME=	gershwin-rik-theme
-DISTVERSION=       202507271325
+DISTVERSION=       202507281259
 CATEGORIES=	x11-themes gnustep
 
 MAINTAINER=	jpm820@proton.me
@@ -8,8 +8,8 @@ WWW=		https://github.com/gershwin-desktop/gershwin-rik-theme
 
 LICENSE=	GPLv2
 
-USES=		gershwin
-USE_GERSHWIN=	back build gui
+USES=		gnustep
+USE_GNUSTEP=	back build gui
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	gershwin-desktop

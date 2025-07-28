@@ -1,5 +1,5 @@
 PORTNAME=	gershwin-textedit
-DISTVERSION=       202507271325
+DISTVERSION=       202507281259
 CATEGORIES=	deskutils gnustep
 
 MAINTAINER=	jpm820@proton.me
@@ -8,8 +8,8 @@ WWW=		https://github.com/gershwin-desktop/gershwin-textedit
 
 LICENSE=	MIT
 
-USES=		gershwin
-USE_GERSHWIN=	back build
+USES=		gnustep
+USE_GNUSTEP=	back build
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	gershwin-desktop

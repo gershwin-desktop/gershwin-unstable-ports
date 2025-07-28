@@ -216,10 +216,6 @@ read_ports_list() {
 install_overlay_ports() {
   read_ports_list
 
-  # Install custom Mk/Uses file
-  install -d /usr/ports/Mk/Uses
-  install -m 0644 ports-overlay/Mk/Uses/gershwin.mk /usr/ports/Mk/Uses/gershwin.mk
-
   # Replace listed ports
   for port in $PORTS_LIST; do
     port_path="/usr/ports/$port"
@@ -257,8 +253,6 @@ clean_ports() {
   fi
 
   read_ports_list
-
-  rm -f /usr/ports/Mk/Uses/gershwin.mk 2>/dev/null
 
   for port in $PORTS_LIST; do
     port_path="/usr/ports/$port"

@@ -11,7 +11,7 @@ Unstable Gershwin ports fo FreeBSD
 
 ### How this works
 
-Ports in ports-overylay are treated as meta ports if they have PORTVERSION specified.  Otherwise ports with DISTVERSION will automatically use the latest git hash from master or main branch.  This means everytime this runs the latest GNUstep core libs and Gershwin components are built into ports.  It runs automatically once per day and on commit.  It also allows for local operation outside of Cirrus.
+Ports in ports-overylay are treated as meta ports if they have PORTVERSION specified.  Otherwise ports with DISTVERSION will automatically use the latest git hash from master or main branch.  This means everytime this runs the latest Gershwin components are built into ports.  It runs automatically once per day and on commit.  It also allows for local operation outside of Cirrus.
 
 ## Usage
 
@@ -63,6 +63,6 @@ pkg install gershwin-desktop
 This requires a working Xorg setup before running
 
 ```
-. /System/Library/Makefiles/GNUstep.sh
-startx /System/Applications/GWorkspace.app/Gworkspace
+. /usr/local/GNUstep/System/Library/Makefiles/GNUstep.sh
+startx /usr/local/GNUstep/System/Applications/GWorkspace.app/Gworkspace
 ```
