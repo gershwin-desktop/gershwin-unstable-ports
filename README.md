@@ -63,6 +63,6 @@ pkg install gershwin-desktop
 This requires a working Xorg setup before running
 
 ```
-. /usr/local/GNUstep/System/Library/Makefiles/Gershwin.sh
+. /usr/local/GNUstep/System/Library/Makefiles/GNUstep.sh
 startx /usr/local/GNUstep/System/Applications/GWorkspace.app/Gworkspace
 ```

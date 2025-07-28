@@ -1,3 +1,2 @@
-GNUstep/System/Library/Makefiles/Gershwin.sh
-GNUstep/System/Library/Preferences/GlobalDefaults/NSGlobalDomain.plist
-GNUstep/System/Library/Preferences/GlobalDefaults/org.gnustep.GWorkspace.plist
+GNUstep/GlobalDefaults/NSGlobalDomain.plist
+GNUstep/GlobalDefaults/org.gnustep.GWorkspace.plist

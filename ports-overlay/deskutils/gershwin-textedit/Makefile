@@ -1,5 +1,5 @@
 PORTNAME=	gershwin-textedit
-DISTVERSION=       202507281348
+DISTVERSION=       202507281601
 CATEGORIES=	deskutils gnustep
 
 MAINTAINER=	jpm820@proton.me
