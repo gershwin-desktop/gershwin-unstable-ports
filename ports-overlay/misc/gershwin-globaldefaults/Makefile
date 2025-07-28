@@ -1,5 +1,5 @@
 PORTNAME=       gershwin-globaldefaults
-DISTVERSION=       202507281259
+DISTVERSION=       202507281348
 CATEGORIES=     misc
 MASTER_SITES=   GH
 
@@ -11,7 +11,7 @@ LICENSE=        BSD2CLAUSE
 
 USE_GITHUB=     yes
 GH_ACCOUNT=     gershwin-desktop
-GH_TAGNAME= 8d804bf732b9d7f2f11869f2914efa153c821461
+GH_TAGNAME= e326dee508c9b23066e84f7c3cf8361eac263582
 
 USE_GNUSTEP=    yes
 
@@ -22,8 +22,8 @@ do-install:
 	${MKDIR} ${STAGEDIR}${PREFIX}/GNUstep/System/Library/Preferences/GlobalDefaults
 	${INSTALL_DATA} ${WRKSRC}/System/Library/Preferences/GlobalDefaults/*.plist \
 		${STAGEDIR}${PREFIX}/GNUstep/System/Library/Preferences/GlobalDefaults
-	${MKDIR} ${STAGEDIR}${PREFIX}/GNUstep/System/Library
-	${INSTALL_SCRIPT} ${WRKSRC}/System/Library/Gershwin.sh \
-		${STAGEDIR}${PREFIX}/GNUstep/System/Library
+	${MKDIR} ${STAGEDIR}${PREFIX}/GNUstep/System/Library/Makefiles
+	${INSTALL_SCRIPT} ${WRKSRC}/System/Library/Makefiles/Gershwin.sh \
+		${STAGEDIR}${PREFIX}/GNUstep/System/Library/Makefiles
 
 .include <bsd.port.mk>
