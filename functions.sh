@@ -56,7 +56,7 @@ poudriere_ports() {
     if [ -d "/usr/ports" ]; then
       rm -rf /usr/ports
     fi
-    git clone --depth 1 -b 2025Q3 https://github.com/FreeBSD/freebsd-ports.git /usr/ports
+    git clone --depth 1 https://github.com/FreeBSD/freebsd-ports.git /usr/ports
   fi
 
   if ! poudriere -e "$POUDRIERE_ETC" ports -l | grep -q gershwin_ports; then
@@ -228,7 +228,7 @@ install_overlay_ports() {
 }
 
 poudriere_bulk() {
-  poudriere -e "$POUDRIERE_ETC" bulk -b quarterly -j gershwin_base -p gershwin_ports $(cat ports.list)
+  poudriere -e "$POUDRIERE_ETC" bulk -b latest -j gershwin_base -p gershwin_ports $(cat ports.list)
 }
 
 make_ports() {
