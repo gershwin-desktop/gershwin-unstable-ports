@@ -42,6 +42,14 @@ make clean
 ```
 su
 
+mkdir -p /usr/local/etc/pkg/repos/
+
+echo 'FreeBSD: { url: "pkg+http://pkg.freebsd.org/${ABI}/latest" }' > /usr/local/etc/pkg/repos/FreeBSD.conf
+
+pkg update -f
+
+pkg upgrade
+
 cat > /usr/local/etc/pkg/repos/Gershwin.conf <<\EOF
 Gershwin: {
   url: "https://api.cirrus-ci.com/v1/artifact/github/gershwin-desktop/gershwin-unstable-ports/data/packages/FreeBSD:14:amd64",
