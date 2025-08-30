@@ -10,8 +10,7 @@ WWW=		https://github.com/gershwin-desktop/gershwin-desktop
 
 LICENSE=	BSD3CLAUSE
 
-RUN_DEPENDS=	gershwin-globaldefaults>0:misc/gershwin-globaldefaults \
-		gershwin-workspace>0:deskutils/gershwin-workspace \
+RUN_DEPENDS=	gershwin-workspace>0:deskutils/gershwin-workspace \
 		gershwin-rik-theme>0:x11-themes/gershwin-rik-theme \
 		gershwin-systempreferences>0:deskutils/gershwin-systempreferences \
 		gershwin-terminal>0:x11/gershwin-terminal \

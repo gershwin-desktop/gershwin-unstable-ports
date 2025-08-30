@@ -1,7 +1,6 @@
 deskutils/gershwin-workspace
 deskutils/gershwin-systempreferences
 deskutils/gershwin-textedit
-misc/gershwin-globaldefaults
 x11/gershwin-desktop
 x11/gershwin-terminal
 x11-themes/gershwin-rik-theme
