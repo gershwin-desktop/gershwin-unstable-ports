@@ -1,16 +1,16 @@
 PORTNAME=	gershwin-systempreferences
-DISTVERSION=       202507281601
+DISTVERSION=       202509271954
 CATEGORIES=	deskutils gnustep
 
-MAINTAINER=	jpm820@proton.me
+MAINTAINER=	joe.maloney@icloud.com
 COMMENT=	System Preferences application for Gershwin
 WWW=		https://github.com/gershwin-desktop/gershwin-systempreferences
 
 LICENSE=	GPLv2
 
-USES=		gnustep
+USES=		gershwin
 CONFLICTS=	systempreferences
-USE_GNUSTEP=	back build
+USE_GERSHWIN=	back build
 USE_LDCONFIG=	${GNUSTEP_SYSTEM_LIBRARIES}
 
 USE_GITHUB=	yes

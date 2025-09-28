@@ -3,7 +3,7 @@ Unstable Gershwin ports fo FreeBSD
 
 ## Requirements
 
-* FreeBSD 14.2/14.3
+* FreeBSD 14.3/15.0 amd64
 * git
 * poudriere
 * xorg
@@ -64,13 +64,13 @@ This meta packages installs everything needed for the desktop
 
 ```
 su
-pkg install gershwin-desktop
+pkg install gershwin
 ```
 
 ### Starting the desktop
 This requires a working Xorg setup before running
 
 ```
-. /usr/local/GNUstep/System/Library/Makefiles/GNUstep.sh
-startx /usr/local/GNUstep/System/Applications/GWorkspace.app/Gworkspace
+. /System/Library/Makefiles/GNUstep.sh
+startx /System/Applications/GWorkspace.app/Gworkspace
 ```

@@ -1,21 +1,21 @@
 PORTNAME=	gershwin-workspace
-DISTVERSION=       202507281601
+DISTVERSION=       202509271954
 CATEGORIES=	deskutils gnustep
 
-MAINTAINER=	jpm820@proton.me
+MAINTAINER=	joe.maloney@icloud.com
 COMMENT=	Gershwin workspace manager
 WWW=		https://github.com/gershwin-desktop/gershwin-workspace
 
 LICENSE=	GPLv2
 
-USES=		gnustep
+USES=		gershwin
 CONFLICTS=	gworkspace
-USE_GNUSTEP=	back build
+USE_GERSHWIN=	back build
 USE_LDCONFIG=	${GNUSTEP_SYSTEM_LIBRARIES}
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	gershwin-desktop
-GH_TAGNAME= 7ccffe4334f8f16c99af1bd9e62c40ece37b1b66
+GH_TAGNAME= 85e6ad0119a6d130de4ec4ba7c22aa30123b6837
 
 GNU_CONFIGURE=	yes
 

@@ -53,9 +53,6 @@ poudriere_jail() {
 poudriere_ports() {
   if [ ! -d "/usr/ports" ] || [ -z "$(ls -A /usr/ports 2>/dev/null)" ]; then
     echo "No ports tree found in /usr/ports. Cloning from GitHub..."
-    if [ -d "/usr/ports" ]; then
-      rm -rf /usr/ports
-    fi
     git clone --depth 1 https://github.com/FreeBSD/freebsd-ports.git /usr/ports
   fi
 
@@ -216,6 +213,10 @@ read_ports_list() {
 install_overlay_ports() {
   read_ports_list
 
+  # Install custom Mk/Uses file
+  install -d /usr/ports/Mk/Uses
+  install -m 0644 ports-overlay/Mk/Uses/gershwin.mk /usr/ports/Mk/Uses/gershwin.mk
+
   # Replace listed ports
   for port in $PORTS_LIST; do
     port_path="/usr/ports/$port"
@@ -249,13 +250,9 @@ clean_ports() {
     rm -rf "$base"
     echo "Removed directory tree: $base"
   else
-    echo "Nothing to clean"
+    echo "Nothing to clean for base"
   fi
-
-  read_ports_list
-
-  for port in $PORTS_LIST; do
-    port_path="/usr/ports/$port"
-    rm -rf "$port_path" 2>/dev/null
-  done
+  
+  echo "Removing ports"
+  rm -rf /usr/ports/ &>/dev/null
 }

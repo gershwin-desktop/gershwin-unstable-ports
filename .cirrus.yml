@@ -1,6 +1,6 @@
-# Cirrus CI configuration for FreeBSD 14.2
+# Cirrus CI configuration for FreeBSD 14.3
 freebsd_instance:
-  image_family: freebsd-14-2
+  image_family: freebsd-14-3
   cpu: 2
   memory: 4G
 
@@ -15,6 +15,7 @@ build_task:
     - pkg update
     - pkg install -y git
     - pkg install -y poudriere
+    - pkg install -y tree
 
   # Update ports
   update_ports_script:
@@ -31,6 +32,7 @@ build_task:
     - cp /usr/local/gershwin-build/poudriere/data/packages/gershwin_base-gershwin_ports/.latest/All/*.pkg "$(pwd)/FreeBSD:14:amd64/All/"
     - cp -r /usr/local/gershwin-build/poudriere/data/packages/gershwin_base-gershwin_ports/.latest/Latest/* "$(pwd)/FreeBSD:14:amd64/Latest/" || true
     - cd "$(pwd)/FreeBSD:14:amd64" && pkg repo .
+    - tree -h -D -C -H -./ --houtro=/dev/null -T 'Gershwin packages for FreeBSD' ./ > ./index.html
   
   # Upload artifacts
   packages_artifacts:
