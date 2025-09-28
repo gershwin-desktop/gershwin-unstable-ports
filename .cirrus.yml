@@ -1,6 +1,6 @@
 # Cirrus CI configuration for FreeBSD 14.3
 freebsd_instance:
-  image_family: freebsd-14-3
+  image: freebsd-14-3-release-amd64-ufs
   cpu: 8
   memory: 16G
 
