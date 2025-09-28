@@ -3,7 +3,7 @@ Unstable Gershwin ports fo FreeBSD
 
 ## Requirements
 
-* FreeBSD 14.3/15.0 amd64
+* FreeBSD 14.3 amd64
 * git
 * poudriere
 * xorg
@@ -57,6 +57,8 @@ Gershwin: {
   enabled: yes
 }
 EOF
+
+pkg update
 ```
 
 ### Installing gershwin-desktop environmnet
