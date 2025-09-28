@@ -1,2 +1,9 @@
 devel/gershwin-tools-make
 lang/gershwin-libs-base
+x11-toolkits/gershwin-libs-gui
+x11-toolkits/gershwin-libs-back
+x11-themes/gershwin-rik-theme
+misc/gershwin-globaldefaults
+deskutils/gershwin-workspace
+deskutils/gershwin-systempreferences
+x11/gershwin
