@@ -35,7 +35,7 @@ install_poudriere_conf() {
 
 poudriere_jail() {
   jailname="gershwin_base"
-  jailversion="14.2-RELEASE"
+  jailversion="14.3-RELEASE"
 
   if ! poudriere -e "$POUDRIERE_ETC" jail -l | grep -q "^$jailname"; then
     echo "Creating jail '$jailname' with FreeBSD $jailversion..."
