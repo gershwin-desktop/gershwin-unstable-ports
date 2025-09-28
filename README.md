@@ -5,7 +5,7 @@ Unstable Gershwin ports fo FreeBSD
 
 * FreeBSD 14.3 amd64
 * git
-* poudriere
+* poudriere-devel
 * xorg
 
 
