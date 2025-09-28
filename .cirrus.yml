@@ -14,7 +14,7 @@ build_task:
   install_script:
     - pkg update
     - pkg install -y git
-    - pkg install -y poudriere-devel
+    - pkg install -y poudriere
     - pkg install -y tree
 
   # Update ports

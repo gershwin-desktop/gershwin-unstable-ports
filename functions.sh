@@ -229,7 +229,7 @@ install_overlay_ports() {
 }
 
 poudriere_bulk() {
-  poudriere -e "$POUDRIERE_ETC" bulk -b latest -j gershwin_base -p gershwin_ports $(cat ports.list)
+  poudriere -e "$POUDRIERE_ETC" bulk -j gershwin_base -p gershwin_ports $(cat ports.list)
 }
 
 make_ports() {
